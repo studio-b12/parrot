@@ -1,0 +1,14 @@
+[Unit]
+Description=Parrot - Grafana Alerts to NTFY Relay
+After=network.target auditd.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/bin/parrot
+EnvironmentFile=/etc/parrot/vars.env
+KillMode=process
+Restart=always
+
+[Install]
+WantedBy=default.target
+Alias=sysinfo-exporter.service

@@ -1,0 +1,7 @@
+Package: parrot
+Version: <<VERSION>>
+Section: utils
+Priority: optional
+Architecture: <<ARCH>>
+Maintainer: B12-Touch GmbH <hello@b12-gruppe.de>
+Description: Grafana Alerts to NTFY Relay

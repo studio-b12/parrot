@@ -1,0 +1,37 @@
+# https://taskfile.dev
+
+version: "3"
+
+env:
+  CGO_ENABLED: "0"
+
+tasks:
+  default:
+    cmds:
+      - task: run
+
+  run:
+    cmds:
+      - go run cmd/parrot/main.go {{.CLI_ARGS}}
+
+  build:
+    vars:
+      GOOS: "{{OS}}"
+      GOARCH: "{{ARCH}}"
+    cmds:
+      - |
+        GOOS={{.GOOS}} GOARCH={{.GOARCH}} go build -o bin/parrot_{{.GOOS}}_{{.GOARCH}}{{exeExt}} cmd/parrot/main.go
+
+  build-dpkg:
+    aliases:
+      - dpkg
+    vars:
+      GOOS: "{{OS}}"
+      GOARCH: "{{ARCH}}"
+    deps:
+      - task: build
+        vars:
+          GOOS: "{{ .GOOS }}"
+          GOARCH: "{{ .GOARCH }}"
+    cmds:
+      - scripts/build-dpkg-package.sh {{.GOARCH}}
