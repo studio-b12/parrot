@@ -15,23 +15,25 @@ tasks:
       - go run cmd/parrot/main.go {{.CLI_ARGS}}
 
   build:
-    vars:
-      GOOS: "{{OS}}"
-      GOARCH: "{{ARCH}}"
     cmds:
       - |
-        GOOS={{.GOOS}} GOARCH={{.GOARCH}} go build -o bin/parrot_{{.GOOS}}_{{.GOARCH}}{{exeExt}} cmd/parrot/main.go
+        {{ $os := .GOOS | default OS }}
+        {{ $arch := .GOARCH | default ARCH }}
+        GOOS={{$os}} GOARCH={{$arch}} go build -o {{.OUT_DIR | default (print "bin/parrot_" $os "_" $arch exeExt) }} cmd/parrot/main.go
 
   build-dpkg:
     aliases:
       - dpkg
-    vars:
-      GOOS: "{{OS}}"
-      GOARCH: "{{ARCH}}"
+    requires:
+      vars:
+        - GOARCH
     deps:
       - task: build
         vars:
-          GOOS: "{{ .GOOS }}"
+          GOOS: "linux"
           GOARCH: "{{ .GOARCH }}"
+          OUT_DIR: dist/dpkg/usr/local/bin/parrot
     cmds:
       - scripts/build-dpkg-package.sh {{.GOARCH}}
+      - defer: git checkout dist/dpkg
+      - defer: rm -r dist/dpkg/usr/local/bin
