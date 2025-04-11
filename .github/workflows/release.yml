@@ -40,7 +40,7 @@ jobs:
           GOARCH: ${{ matrix.goarch }}
         run: go build -v -o ${{ env.ASSET_PATH }} ./cmd/parrot/main.go
       - name: Upload Artifcats
-        if: ${{ matrix.goos != 'linux' }}
+        if: ${{ matrix.goos == 'linux' }}
         uses: actions/upload-artifact@v4
         with:
           name: artifacts-${{ matrix.goarch }}
