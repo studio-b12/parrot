@@ -51,6 +51,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: ${{ env.ASSET_PATH }}
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -70,7 +71,7 @@ jobs:
       - name: Retrieve backend binaries
         uses: actions/download-artifact@v4
         with:
-          name: artifacts-${{ matrix.target }}
+          name: artifacts-${{ matrix.goarch }}
           path: dist/dpkg/usr/local/bin
       - name: Rename binary
         run: |
@@ -79,9 +80,10 @@ jobs:
       - name: Build dpkg package
         run: bash ./scripts/build-dpkg-package.sh ${{ matrix.goarch }}
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: parrot-*.deb
+          draft: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
