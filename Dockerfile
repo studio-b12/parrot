@@ -5,7 +5,7 @@ COPY cmd/ cmd/
 COPY pkg/ pkg/
 RUN go build -o parrot cmd/parrot/main.go
 
-FROM alpine:latest
-COPY --from=build /build/parrot /usr/local/bin/parrot
+FROM scratch
+COPY --from=build /build/parrot /parrot
 EXPOSE 8080
-ENTRYPOINT [ "/usr/local/bin/parrot" ]
+ENTRYPOINT [ "/parrot" ]
